@@ -10,6 +10,8 @@ namespace ExpandableTableView
     {
         private IDictionary<NSIndexPath, string> _expandedRows;
 
+        private NSIndexPath _indexPathOfSelectedRow;
+
         private IEnumerable<IGrouping<TGroup, TItem>> _items;
 
         public IEnumerable<IGrouping<TGroup, TItem>> Items
@@ -71,7 +73,21 @@ namespace ExpandableTableView
                 _expandedRows.Add(indexPath, string.Empty);
             }
 
-            TableView.ReloadRows(new [] { indexPath }, UITableViewRowAnimation.Automatic);
+            _indexPathOfSelectedRow = indexPath;
+
+            TableView.ReloadRows(new[] { indexPath }, UITableViewRowAnimation.Fade);
+
+            TableView.ScrollToRow(indexPath, UITableViewScrollPosition.Top, true);
+        }
+
+        public override void WillDisplay(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath)
+        {
+            (cell as TableViewCell).UpdateIndicator(_indexPathOfSelectedRow == indexPath);
+
+            if (_indexPathOfSelectedRow == indexPath)
+            {
+                _indexPathOfSelectedRow = null;
+            }
         }
 
         public override string TitleForHeader(UITableView tableView, nint section) => Items?.ElementAt((int)section).Key.ToString() ?? null;
