@@ -113,6 +113,7 @@
     <Compile Include="TableViewController.cs" />
     <Compile Include="TableViewSource.cs" />
     <Compile Include="TableViewCell.cs" />
+    <Compile Include="TableViewHeaderFooterView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

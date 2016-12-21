@@ -33,6 +33,11 @@ namespace ExpandableTableView
             get;
         }
 
+        protected string HeaderIdentifier
+        {
+            get;
+        }
+
         protected UITableView TableView
         {
             get;
@@ -43,10 +48,13 @@ namespace ExpandableTableView
             TableView = tableView;
 
             var cellType = typeof(TableViewCell);
+            var headerType = typeof(TableViewHeaderFooterView);
 
             CellIdentifier = cellType.Name;
+            HeaderIdentifier = headerType.Name;
 
             TableView.RegisterClassForCellReuse(cellType, CellIdentifier);
+            TableView.RegisterClassForHeaderFooterViewReuse(headerType, HeaderIdentifier);
 
             _expandedRows = new Dictionary<NSIndexPath, string>();
         }
@@ -76,8 +84,6 @@ namespace ExpandableTableView
             _indexPathOfSelectedRow = indexPath;
 
             TableView.ReloadRows(new[] { indexPath }, UITableViewRowAnimation.Fade);
-
-            TableView.ScrollToRow(indexPath, UITableViewScrollPosition.Top, true);
         }
 
         public override void WillDisplay(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath)
@@ -90,7 +96,20 @@ namespace ExpandableTableView
             }
         }
 
-        public override string TitleForHeader(UITableView tableView, nint section) => Items?.ElementAt((int)section).Key.ToString() ?? null;
+        //public override string TitleForHeader(UITableView tableView, nint section) => Items?.ElementAt((int)section).Key.ToString() ?? null;
+
+        public override UIView GetViewForHeader(UITableView tableView, nint section)
+        {
+            var header = tableView.DequeueReusableHeaderFooterView(HeaderIdentifier) as TableViewHeaderFooterView;
+
+            header.Bind(Items.ElementAt((int)section).Key);
+
+            return header;
+        }
+
+        public override nfloat GetHeightForHeader(UITableView tableView, nint section) => UITableView.AutomaticDimension;
+
+        public override nfloat EstimatedHeightForHeader(UITableView tableView, nint section) => 44;
 
         public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) => UITableView.AutomaticDimension;
 
