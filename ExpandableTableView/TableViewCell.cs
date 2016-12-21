@@ -18,7 +18,6 @@ namespace ExpandableTableView
             get;
         }
 
-
         protected UIImageView IndicatorImageView
         {
             get;
@@ -88,31 +87,6 @@ namespace ExpandableTableView
                 DetailLabelBottomConstraint = DetailLabel.BottomAnchor.ConstraintEqualTo(ContentView.BottomAnchor),
                 DetailLabelHeightConstraint = DetailLabel.HeightAnchor.ConstraintEqualTo(0),
             });
-        }
-
-        public void AnimateUpdateIndicator()
-        {
-            AnimateAsync(.35f, () => 
-            {
-                IndicatorImageView.Transform = IsExpanded
-                    ? CGAffineTransform.MakeRotation((nfloat)(Math.PI))
-                    : CGAffineTransform.MakeIdentity();
-            });
-        }
-
-        public void SetIsExpanded(bool value, bool update = true)
-        {
-            IsExpanded = value;
-
-            if (update)
-            {
-                IndicatorImageView.Transform = CGAffineTransform.MakeIdentity();
-
-                if (_isExpanded)
-                {
-                    IndicatorImageView.Transform = CGAffineTransform.MakeRotation((nfloat)(Math.PI));
-                }
-            }
         }
 
         public void UpdateIndicator(bool animated)
